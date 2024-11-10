@@ -1,55 +1,57 @@
 # README for Skin Disease Classification Model Training Script
 
 ## Overview
-This script trains a deep learning model for skin disease classification using TensorFlow and Keras, utilizing a dataset of categorized skin disease images. The model leverages **MobileNetV2** as a lightweight and efficient base architecture, optimized to work within resource constraints on Kaggle. The script incorporates **data augmentation**, **mixed precision training**, and **callbacks** to enhance performance and optimize training.
+This script trains a deep learning model for skin disease classification on a dataset of categorized skin disease images. The model is built on **MobileNetV2**, an efficient and lightweight architecture ideal for resource-limited environments. Key features include **data augmentation**, **mixed precision training**, and multiple **callbacks** to enhance performance.
+
+You can find the model and code here:
+[Kaggle - Skin Disease Model](https://www.kaggle.com/code/sanskarsri2004/skin-disease-model)
+
+The dataset used is available at:
+[Kaggle - Skin Diseases Image Dataset](https://www.kaggle.com/datasets/ismailpromus/skin-diseases-image-dataset/data)
 
 ## Key Components
 
 1. **Data Augmentation**: 
-   - The script applies various augmentations (shear, zoom, flip, rotation, brightness adjustment) using `ImageDataGenerator`, helping to improve generalization and reduce overfitting.
-   - It includes a validation split (20%) from the dataset.
+   - Utilizes `ImageDataGenerator` with augmentations (shear, zoom, flip, rotation, brightness adjustment) to improve generalization and reduce overfitting.
+   - Includes a validation split of 20%.
 
 2. **MobileNetV2 Base Model**:
-   - The **MobileNetV2** model is used for its lightweight architecture, ideal for limited-resource environments like Kaggle.
-   - Pretrained weights are loaded, excluding the top layer (`include_top=False`), allowing for transfer learning.
-   - The base model is initially frozen, so only the top layers train during early epochs.
+   - **MobileNetV2** is used for transfer learning with pretrained weights, omitting the top layer (`include_top=False`).
+   - The base model is initially frozen for early training epochs.
 
 3. **Model Architecture**:
-   - The architecture consists of the **MobileNetV2** base model followed by a global average pooling layer, a dense layer with 128 units, a dropout layer, and a final dense layer with softmax activation.
-   - The final layer uses the number of classes from `train_generator` and outputs class probabilities.
+   - Sequential architecture includes **MobileNetV2** followed by a global average pooling layer, a dense layer with 128 units, dropout, and a softmax layer for class probabilities.
 
 4. **Training Configuration**:
-   - The model is compiled with **Adam optimizer** and a low learning rate (1e-4).
-   - Loss function: `categorical_crossentropy`, suitable for multi-class classification.
-   - Metric: `accuracy` to monitor model performance.
+   - Optimizer: **Adam** with a learning rate of 1e-4.
+   - Loss function: `categorical_crossentropy`.
+   - Metrics: `accuracy`.
 
 5. **Callbacks**:
-   - **EarlyStopping**: Monitors `val_loss` and stops training if no improvement is seen for 5 epochs, restoring the best model.
-   - **ReduceLROnPlateau**: Reduces the learning rate if `val_loss` plateaus, helping the model converge.
-   - **ModelCheckpoint**: Saves the best model based on `val_loss`.
+   - **EarlyStopping** to halt training if `val_loss` shows no improvement.
+   - **ReduceLROnPlateau** to lower the learning rate when `val_loss` stagnates.
+   - **ModelCheckpoint** to save the best-performing model based on `val_loss`.
 
 6. **Mixed Precision Training**:
-   - `mixed_float16` precision is enabled to accelerate training, making efficient use of GPU resources on Kaggle.
+   - `mixed_float16` precision accelerates training by optimizing GPU memory usage on Kaggle.
 
 ## Usage Instructions
 
-- Update the dataset paths to match your Kaggle dataset structure.
-- Make sure the MobileNetV2 weights are available in the specified location.
-- Run the script in a Kaggle notebook, which will:
-  - Load and preprocess the data.
-  - Initialize and train the model.
-  - Save the trained model file (`skin_disease_model_mobilenet.h5`) for future inference or further fine-tuning.
+- Adjust dataset paths to match your Kaggle setup.
+- Ensure MobileNetV2 weights are available in the specified path.
+- Running the script in a Kaggle notebook will:
+  - Load and preprocess data.
+  - Train the model with callbacks.
+  - Save the model as `skin_disease_model_mobilenet.h5` for later use.
 
 ## Expected Output
 
-The script will output:
-- Training and validation accuracy and loss for each epoch.
-- The final trained model saved in `skin_disease_model_mobilenet.h5`.
-- Intermediate model checkpoints saved with `best_model.keras` filename.
+Outputs include:
+- Training and validation accuracy and loss per epoch.
+- Saved model file `skin_disease_model_mobilenet.h5`.
+- Intermediate checkpoints saved as `best_model.keras`.
 
 ## Notes
 
-- Adjust the `batch_size` and `epochs` if necessary based on memory constraints and desired training duration.
-- For enhanced accuracy, further fine-tuning can be conducted by unfreezing some layers of the `MobileNetV2` base model.
-
-This README serves as a guide for understanding and modifying the script for skin disease classification on a custom dataset using a Kaggle environment.
+- Modify `batch_size` and `epochs` as needed based on resources and training time.
+- For higher accuracy, consider unfreezing additional layers for fine-tuning.
